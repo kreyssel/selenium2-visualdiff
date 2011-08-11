@@ -8,6 +8,7 @@ import org.junit.runners.model.Statement;
 import org.kreyssel.selenium.visualdiff.core.ScreenshotManager;
 
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,11 +22,7 @@ import java.util.Set;
  */
 public class TakesScreenshotRule implements MethodRule {
 
-    private Class<?> testClass;
-
-    private String testMethodName;
-
-    private Set<String> screenshotIds;
+    private ScreenshotManager screenshotManager;
 
     /**
      * DOCUMENT ME!
@@ -38,9 +35,7 @@ public class TakesScreenshotRule implements MethodRule {
      */
     public Statement apply( final Statement base, final FrameworkMethod method, final Object target ) {
 
-        this.testClass = target.getClass();
-        this.testMethodName = method.getName();
-        this.screenshotIds = new HashSet<String>();
+        this.screenshotManager=new ScreenshotManager(target.getClass(), method.getName());
 
         return base;
     }
@@ -54,7 +49,7 @@ public class TakesScreenshotRule implements MethodRule {
      *
      * @throws  IOException
      */
-    public File takeScreenshot( final TakesScreenshot driver ) throws IOException {
+    public File takeScreenshot( final WebDriver driver ) throws IOException {
         return takeScreenshot( "1", driver );
     }
 
@@ -68,27 +63,7 @@ public class TakesScreenshotRule implements MethodRule {
      *
      * @throws  IOException
      */
-    public File takeScreenshot( final String id, final TakesScreenshot driver ) throws IOException {
-        validateScreenshotId( id );
-
-        return ScreenshotManager.takeScreenshot( testClass, testMethodName, id, driver );
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param  screenshotId  DOCUMENT ME!
-     */
-    private void validateScreenshotId( final String screenshotId ) {
-
-        if( !screenshotId.matches( "[a-zA-Z0-9]+" ) ) {
-            throw new RuntimeException( "Wrong screenshot id format '" + screenshotId + "'!" );
-        }
-
-        if( this.screenshotIds.contains( screenshotId ) ) {
-            throw new RuntimeException( "Duplicate screenshot id '" + screenshotId + "'!" );
-        }
-
-        this.screenshotIds.add( screenshotId );
+    public File takeScreenshot( final String id, final WebDriver driver ) throws IOException {
+        return screenshotManager.takeScreenshot( id, driver );
     }
 }

@@ -6,12 +6,15 @@ import org.apache.commons.lang3.StringUtils;
 
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 
 
 /**
@@ -23,11 +26,18 @@ public final class ScreenshotManager {
 
     public static final String PROPERTY_OUTPUT_PATH = "outputpath";
 
+    private Class<?> testClass;
+    
+    private String testMethodName;
+    
+    private Set<String> screenshotIds =new HashSet<String>();
+    
     /**
      * Creates a new ScreenshotManager object.
      */
-    private ScreenshotManager() {
-
+    public ScreenshotManager(Class<?> testClass, String testMethodName) {
+    	this.testClass = testClass;
+    	this.testMethodName = testMethodName;
     }
 
     /**
@@ -42,12 +52,19 @@ public final class ScreenshotManager {
      *
      * @throws  IOException  DOCUMENT ME!
      */
-    public static File takeScreenshot( final Class<?> testClass, final String testMethodName, final String screenshotId,
-        final TakesScreenshot driver ) throws IOException {
+    public File takeScreenshot(  final String screenshotId, final WebDriver driver ) throws IOException {
 
+    	validateScreenshotId(screenshotId);
+    	
         String screenshotSignature = testClass.getName() + "_" + testMethodName + "_" + screenshotId;
 
-        File tmpPngFile = driver.getScreenshotAs( OutputType.FILE );
+        if(!(driver instanceof TakesScreenshot)) {
+        	throw new RuntimeException("Class '"+driver.getClass().getName()+"' is not a instance of '"+TakesScreenshot.class.getName()+"'!");
+        }
+        
+        TakesScreenshot screenshotDriver = (TakesScreenshot) driver;
+        
+        File tmpPngFile = screenshotDriver.getScreenshotAs( OutputType.FILE );
 
         if( tmpPngFile == null ) {
             throw new RuntimeException( "Got no screenshot for test '" + screenshotSignature + "'!" );
@@ -70,7 +87,7 @@ public final class ScreenshotManager {
      *
      * @throws  IOException
      */
-    static void copyScreenshot( final File src, final File target ) throws IOException {
+    void copyScreenshot( final File src, final File target ) throws IOException {
         System.out.println( "Copy screenshot to '" + target.getAbsolutePath() + "' (" +
             FileUtils.byteCountToDisplaySize( src.length() ) + ") ..." );
 
@@ -87,7 +104,7 @@ public final class ScreenshotManager {
      *
      * @throws  IOException  DOCUMENT ME!
      */
-    static File getScreenshotOutputPath( final Class<?> testClass, final String screenshotSignature )
+    File getScreenshotOutputPath( final Class<?> testClass, final String screenshotSignature )
         throws IOException {
         File baseOutputDir = getScreenshotOutputPath( testClass );
         String filepath = screenshotSignature.replace( '.', '/' ) + ".png";
@@ -105,7 +122,7 @@ public final class ScreenshotManager {
      *
      * @throws  IOException  DOCUMENT ME!
      */
-    private static File getScreenshotOutputPath( final Class<?> testClass ) throws IOException {
+    private File getScreenshotOutputPath( final Class<?> testClass ) throws IOException {
         Properties props = new Properties();
         InputStream in = null;
 
@@ -144,5 +161,23 @@ public final class ScreenshotManager {
         String filepath = "/" + classPath + "/" + PROPERTIES_FILE;
 
         return filepath;
+    }
+    
+    /**
+     * DOCUMENT ME!
+     *
+     * @param  screenshotId  DOCUMENT ME!
+     */
+    void validateScreenshotId( final String screenshotId ) {
+
+        if( !screenshotId.matches( "[a-zA-Z0-9]+" ) ) {
+            throw new RuntimeException( "Wrong screenshot id format '" + screenshotId + "'!" );
+        }
+
+        if( this.screenshotIds.contains( screenshotId ) ) {
+            throw new RuntimeException( "Duplicate screenshot id '" + screenshotId + "'!" );
+        }
+
+        this.screenshotIds.add( screenshotId );
     }
 }
