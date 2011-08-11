@@ -39,18 +39,14 @@ public final class ScreenshotManager {
     	this.testClass = testClass;
     	this.testMethodName = testMethodName;
     }
-
+    
     /**
-     * DOCUMENT ME!
+     * Take screenshot.
      *
-     * @param   testClass       DOCUMENT ME!
-     * @param   testMethodName  DOCUMENT ME!
-     * @param   screenshotId    DOCUMENT ME!
-     * @param   driver          DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     *
-     * @throws  IOException  DOCUMENT ME!
+     * @param screenshotId the screenshot id
+     * @param driver the driver
+     * @return the file
+     * @throws IOException Signals that an I/O exception has occurred.
      */
     public File takeScreenshot(  final String screenshotId, final WebDriver driver ) throws IOException {
 
