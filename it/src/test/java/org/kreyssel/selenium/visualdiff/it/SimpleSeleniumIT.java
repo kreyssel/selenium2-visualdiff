@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import org.kreyssel.selenium.visualdiff.core.junit.TakesScreenshotRule;
+import org.kreyssel.selenium.visualdiff.core.junit4.TakesScreenshotRule;
 
 import org.openqa.selenium.browserlaunchers.locators.SafariLocator;
 import org.openqa.selenium.chrome.ChromeDriver;

@@ -1,4 +1,4 @@
-package org.kreyssel.selenium.visualdiff.core.junit;
+package org.kreyssel.selenium.visualdiff.core.junit4;
 
 import org.junit.rules.MethodRule;
 
