@@ -5,10 +5,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.project.MavenProject;
 import org.kreyssel.selenium.visualdiff.core.ScreenshotManager;
 
 /**
@@ -17,20 +15,7 @@ import org.kreyssel.selenium.visualdiff.core.ScreenshotManager;
  * @goal prepare
  * @phase validate
  */
-public class PrepareMojo extends AbstractMojo {
-
-	/**
-	 * @parameter default-value="${project}"
-	 * @required
-	 * @readonly
-	 */
-	private MavenProject mavenProject;
-
-	/**
-	 * @parameter default-value="${project.basedir}/target/screenshots"
-	 * @required
-	 */
-	private File outputDirectory;
+public class PrepareMojo extends BaseMojo {
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
 
@@ -38,9 +23,10 @@ public class PrepareMojo extends AbstractMojo {
 			throw new MojoFailureException("project is null!");
 		}
 
-		String dir = mavenProject.getBuild().getTestOutputDirectory();
+		String testOutputDir = mavenProject.getBuild().getTestOutputDirectory();
 
-		File file = new File(dir, ScreenshotManager.getPropertiesFilePath());
+		File file = new File(testOutputDir,
+				ScreenshotManager.getPropertiesFilePath());
 
 		try {
 			save(file, outputDirectory);
@@ -66,7 +52,7 @@ public class PrepareMojo extends AbstractMojo {
 		propertiesFile.getParentFile().mkdirs();
 
 		Properties props = new Properties();
-		props.setProperty(ScreenshotManager.PROPERTY_OUTPUT_PATH,
+		props.setProperty(ScreenshotManager.PROPERTY_OUTPUT_FILEPATH,
 				screenshotDir.getAbsolutePath());
 
 		FileWriter w = new FileWriter(propertiesFile);

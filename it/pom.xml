@@ -44,6 +44,7 @@
 					<execution>
 						<goals>
 							<goal>prepare</goal>
+							<goal>package</goal>
 						</goals>
 					</execution>
 				</executions>

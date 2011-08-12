@@ -34,6 +34,12 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>visualdiff-core</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>de.schlichtherle.truezip</groupId>
+			<artifactId>truezip-file</artifactId>
+			<version>7.2.1</version>
+		</dependency>
 	</dependencies>
 	
 </project>
