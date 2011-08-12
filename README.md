@@ -24,19 +24,20 @@ Embed jUnit4 and the selenium-visualdiff core library as dependencies in your fu
 
 Add the selenium-visualdiff-maven-plugin to the maven module:
 
-<plugins>
-    ...
-    <plugin>
-        <groupId>org.kreyssel.selenium.visualdiff</groupId>
-        <artifactId>visualdiff-maven-plugin</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
-        <executions>
-            <execution>
-                <goals>
-                    <goal>prepare</goal>
-                    <goal>package</goal>
-                </goals>
-            </execution>
-        </executions>
-    </plugin>
-    ...
+    <plugins>
+        ...
+        <plugin>
+            <groupId>org.kreyssel.selenium.visualdiff</groupId>
+            <artifactId>visualdiff-maven-plugin</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>prepare</goal>
+                        <goal>package</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+        ...
+    </plugins>
