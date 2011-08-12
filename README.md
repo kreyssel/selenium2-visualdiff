@@ -75,3 +75,6 @@ And after all embed ''TakesScreenshotRule'' in yout functional test:
             screenshot.takeScreenshot( driver );
         }
     }
+
+After the executions of functional tests in a maven run, all screenshots taken at this time are packaged as zip and attached to the build as '${project.build.finalName}-screenshots.zip'. This zip is deployed to maven repository.
+
