@@ -42,7 +42,7 @@ Add the selenium-visualdiff-maven-plugin to the maven module:
         ...
     </plugins>
 
-And after all embed ''TakesScreenshotRule'' in yout functional test:
+And after all embed *TakesScreenshotRule* in yout functional test:
 
     package org.kreyssel.selenium.visualdiff.it;
     
@@ -76,5 +76,5 @@ And after all embed ''TakesScreenshotRule'' in yout functional test:
         }
     }
 
-After the executions of functional tests in a maven run, all screenshots taken at this time are packaged as zip and attached to the build as '${project.build.finalName}-screenshots.zip'. This zip is deployed to maven repository.
+After the executions of functional tests in a maven run, all screenshots taken at this time are packaged as zip and attached to the build as *${project.build.finalName}-screenshots.zip*. This zip is deployed to maven repository.
 
