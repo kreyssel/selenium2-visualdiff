@@ -3,13 +3,13 @@ Selenium Visual Diff
 
 Goal
 ----
-The goal is a better integration of screenshots taking in maven executed selenium2
+The goal is a better integration of screenshots taking in maven executed *selenium2*
 functional tests, storing and versioning of screenshots to get a report of visual differences
 between two application versions.
 
 Usage
 -----
-Embed jUnit4 and the selenium-visualdiff core library as dependencies in your funtional test maven module:
+Embed *jUnit4* and the *selenium-visualdiff* core library as dependencies in your funtional test maven module:
 
     <dependencies>
         ...
@@ -78,5 +78,5 @@ And after all, embed *org.kreyssel.selenium.visualdiff.core.junit4.TakesScreensh
 
 After the executions of functional tests in a maven run, all screenshots taken at this time are packaged as zip and attached to the build as *${project.build.finalName}-screenshots.zip*. This zip is deployed to maven repository in the *deploy* phase of the maven build.
 
-The *selenium-visualdiff* report plugin generates a report that shows you the different screens per testcase.
+The *selenium-visualdiff* report plugin generates a report that shows you the different screens per testcase compared to the previous release.
 
