@@ -50,9 +50,9 @@ public class SimpleSeleniumIT {
     }
     
     private RemoteWebDriver createDriver(){
-    	if(SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX) 
-    		return new FirefoxDriver();
-    	
-    	return new InternetExplorerDriver();
+    	if(SystemUtils.IS_OS_WINDOWS)   	
+    	    return new InternetExplorerDriver();
+
+	return new FirefoxDriver();
     }
 }
