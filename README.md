@@ -76,7 +76,7 @@ And after all, embed *org.kreyssel.selenium.visualdiff.core.junit4.TakesScreensh
         }
     }
 
-After the executions of functional tests in a maven run, all screenshots taken at this time are packaged as zip and attached to the build as *${project.build.finalName}-screenshots.zip*. This zip is deployed to maven repository in the *deploy* phase of the maven build.
+After the executions of functional tests in a maven run, all screenshots taken at this time are packaged as zip and attached to the build as *${project.build.finalName}-screenshots.zip*. This archive is deployed to maven repository in the *deploy* phase of the maven build.
 
 The *selenium-visualdiff* report plugin generates a report that shows you the different screens per testcase compared to the previous release.
 
