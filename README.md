@@ -42,7 +42,7 @@ Add the selenium-visualdiff-maven-plugin to the maven module:
         ...
     </plugins>
 
-And after all, embed *org.kreyssel.selenium.visualdiff.core.junit4.TakesScreenshotRule* in yout functional test:
+And after all, embed *org.kreyssel.selenium.visualdiff.core.junit4.TakesScreenshotRule* in your functional test:
 
     package org.kreyssel.selenium.visualdiff.it;
     
