@@ -41,3 +41,36 @@ Add the selenium-visualdiff-maven-plugin to the maven module:
         </plugin>
         ...
     </plugins>
+
+And after all embed ''TakesScreenshotRule'' in yout functional test:
+
+	package org.kreyssel.selenium.visualdiff.it;
+	
+	import org.kreyssel.selenium.visualdiff.core.junit4.TakesScreenshotRule;
+	
+	/**
+	 * SimpleSeleniumIT.
+	 */
+	public class SimpleSeleniumIT {
+	
+	    @Rule
+	    public TakesScreenshotRule screenshot = new TakesScreenshotRule();
+	
+		RemoteWebDriver driver;
+	
+		@Before
+		public void init() {
+			driver = createDriver();
+		}
+	
+		@After
+		public void destroy() {
+			driver.close();
+		}
+	    
+	    @Test
+	    public void test1() throws Exception {
+	        driver.get( "http://localhost:8080" );
+	
+	        screenshot.takeScreenshot( driver );
+	    }
