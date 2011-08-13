@@ -12,6 +12,8 @@ import org.apache.maven.project.MavenProjectHelper;
 public abstract class BaseMojo extends AbstractMojo {
 
 	/**
+	 * Maven Project
+	 * 
 	 * @parameter default-value="${project}"
 	 * @required
 	 * @readonly
@@ -27,9 +29,11 @@ public abstract class BaseMojo extends AbstractMojo {
 	MavenProjectHelper projectHelper;
 
 	/**
-	 * @parameter default-value="${project.build.directory}/screenshots"
+	 * @parameter default-value=
+	 *            "${project.build.directory}/${project.build.finalName}-screenshots.zip"
+	 * 
 	 * @required
 	 */
-	File outputDirectory;
+	File archiveFile;
 
 }

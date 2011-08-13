@@ -28,11 +28,9 @@ public class TakesScreenshotRule implements MethodRule {
 	 * 
 	 * @return DOCUMENT ME!
 	 */
-	public Statement apply(final Statement base, final FrameworkMethod method,
-			final Object target) {
+	public Statement apply(final Statement base, final FrameworkMethod method, final Object target) {
 
-		this.screenshotManager = new ScreenshotManager(target.getClass(),
-				method.getName());
+		this.screenshotManager = new ScreenshotManager(target.getClass(), method.getName());
 
 		return base;
 	}
@@ -63,8 +61,7 @@ public class TakesScreenshotRule implements MethodRule {
 	 * 
 	 * @throws IOException
 	 */
-	public File takeScreenshot(final String id, final WebDriver driver)
-			throws IOException {
-		return screenshotManager.takeScreenshot(id, driver);
+	public File takeScreenshot(final String id, final WebDriver driver) throws IOException {
+		return screenshotManager.takeScreenshot(driver, id);
 	}
 }

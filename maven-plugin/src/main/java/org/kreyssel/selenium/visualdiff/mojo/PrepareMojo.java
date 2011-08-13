@@ -24,15 +24,12 @@ public class PrepareMojo extends BaseMojo {
 		}
 
 		String testOutputDir = mavenProject.getBuild().getTestOutputDirectory();
-
-		File file = new File(testOutputDir,
-				ScreenshotManager.getPropertiesFilePath());
+		File propertyFile = new File(testOutputDir, ScreenshotManager.getPropertiesFilePath());
 
 		try {
-			save(file, outputDirectory);
+			save(propertyFile, archiveFile);
 		} catch (IOException ex) {
-			throw new MojoExecutionException(
-					"Error on store screenshot path properties file!", ex);
+			throw new MojoExecutionException("Error on store screenshot path properties file!", ex);
 		}
 	}
 
@@ -46,14 +43,13 @@ public class PrepareMojo extends BaseMojo {
 	 * 
 	 * @throws IOException
 	 */
-	private void save(final File propertiesFile, final File screenshotDir)
-			throws IOException {
+	private void save(final File propertiesFile, final File screenshotArchive) throws IOException {
 
 		propertiesFile.getParentFile().mkdirs();
 
 		Properties props = new Properties();
 		props.setProperty(ScreenshotManager.PROPERTY_OUTPUT_FILEPATH,
-				screenshotDir.getAbsolutePath());
+				screenshotArchive.getAbsolutePath());
 
 		FileWriter w = new FileWriter(propertiesFile);
 
