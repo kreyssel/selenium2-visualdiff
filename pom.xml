@@ -11,6 +11,10 @@
 	<name>VisualDiff :: Project</name>
 	<description>Project to support to create Screenshots within Funtional Selenium Tests, package this screenshots as artifact on release and compare this with previous screenshots.</description>
 
+	<prerequisites>
+		<maven>2.2.1</maven>
+	</prerequisites>
+
 	<modules>
 		<module>core</module>
 		<module>maven-plugin</module>
@@ -81,6 +85,12 @@
 				</plugin>
 
 				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-site-plugin</artifactId>
+					<version>3.0</version>
+				</plugin>
+
+				<plugin>
 					<groupId>${project.groupId}</groupId>
 					<artifactId>visualdiff-maven-plugin</artifactId>
 					<version>${project.version}</version>
@@ -100,15 +110,6 @@
 				</file>
 			</activation>
 			<build>
-				<pluginManagement>
-					<plugins>
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-site-plugin</artifactId>
-							<version>3.0</version>
-						</plugin>
-					</plugins>
-				</pluginManagement>
 				<plugins>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
