@@ -32,7 +32,7 @@
  *    MA  02111-1307  USA
  *
  ************************************************************************/
-package org.kreyssel.selenium.visualdiff.core.images;
+package org.kreyssel.selenium.visualdiff.core.diff;
 
 
 import java.awt.image.BufferedImage;

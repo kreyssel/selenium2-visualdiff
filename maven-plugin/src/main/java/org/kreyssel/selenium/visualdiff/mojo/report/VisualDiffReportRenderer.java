@@ -16,8 +16,8 @@ public class VisualDiffReportRenderer extends AbstractMavenReportRenderer {
 
 	@Override
 	protected void renderBody() {
-		sink.section1();
-		sink.figureGraphics("jj");
+		sink.sectionTitle1();
+		sink.text("xxx");
 	}
 
 }

@@ -1,8 +1,6 @@
 package org.kreyssel.selenium.visualdiff.mojo;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Locale;
 
@@ -21,9 +19,8 @@ import org.apache.maven.reporting.AbstractMavenReport;
 import org.apache.maven.reporting.MavenReportException;
 import org.codehaus.mojo.versions.api.ArtifactVersions;
 import org.codehaus.mojo.versions.ordering.VersionComparators;
-import org.kreyssel.selenium.visualdiff.core.ScreenshotMeta;
 import org.kreyssel.selenium.visualdiff.core.ScreenshotStore;
-import org.kreyssel.selenium.visualdiff.core.images.ImageCompare;
+import org.kreyssel.selenium.visualdiff.core.diff.VisualDiff;
 import org.kreyssel.selenium.visualdiff.mojo.report.VisualDiffReportRenderer;
 
 /**
@@ -157,62 +154,9 @@ public class ReportMojo extends AbstractMavenReport {
 		}
 
 		ScreenshotStore currentScreenshotsStore = new ScreenshotStore(currentArchiveFile);
-		List<ScreenshotMeta> currentScreenshots;
-		try {
-			currentScreenshots = currentScreenshotsStore.getScreenshots();
-		} catch (IOException ex) {
-			throw new MavenReportException("Error on retrieving current screenshots list!", ex);
-		}
-
 		ScreenshotStore previousScreenshotsStore = new ScreenshotStore(previousArchiveFile);
-		List<ScreenshotMeta> lastScreenshots;
-		try {
-			lastScreenshots = previousScreenshotsStore.getScreenshots();
-		} catch (IOException ex) {
-			throw new MavenReportException(
-					"Error on retrieving previous version screenshots list!", ex);
-		}
-
-		for (ScreenshotMeta currentScreenshot : currentScreenshots) {
-			if (lastScreenshots.contains(currentScreenshot)) {
-				try {
-					ScreenshotMeta previousScreenshot = lastScreenshots.get(lastScreenshots
-							.indexOf(currentScreenshot));
-
-					InputStream inCurr = currentScreenshotsStore
-							.getInputStream(currentScreenshot.path);
-					InputStream inLast = previousScreenshotsStore
-							.getInputStream(previousScreenshot.path);
-
-					ImageCompare ic = new ImageCompare(inCurr, inLast);
-
-					inCurr.close();
-					inLast.close();
-
-					boolean equal;
-					try {
-						equal = ic.compare();
-					} catch (InterruptedException ex) {
-						throw new MavenReportException("Error on compare screenshots!", ex);
-					}
-
-					if (!equal) {
-						File diffFile = new File(outputDirectory, currentScreenshot.path);
-						getLog().info(
-								"Detect a different screenshot and stored diff image in '"
-										+ diffFile.getAbsolutePath() + "'!");
-						diffFile.getParentFile().mkdirs();
-						ic.saveDiffAsPng(diffFile);
-					}
-				} catch (IOException ex) {
-					getLog().warn("Error on compare images!", ex);
-				}
-			}
-		}
-
-		for (ScreenshotMeta screenshot : lastScreenshots) {
-			System.out.println(screenshot);
-		}
+		VisualDiff vd = new VisualDiff(currentScreenshotsStore, previousScreenshotsStore);
+		vd.diff();
 
 		new VisualDiffReportRenderer(getSink()).render();
 	}
