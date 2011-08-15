@@ -22,12 +22,14 @@ public class VisualDiff {
 	public void diff() throws IOException {
 		List<ScreenshotMeta> screenshots1 = store1.getScreenshots();
 		List<ScreenshotMeta> screenshots2 = store2.getScreenshots();
+	}
+
+	protected void diff(final List<ScreenshotMeta> screenshots1,
+			final List<ScreenshotMeta> screenshots2) {
 
 		for (ScreenshotMeta screenshot1 : screenshots1) {
 			if (screenshots2.contains(screenshot1)) {
-				ScreenshotMeta screenshot2 = screenshots2
-
-				.get(screenshots2.indexOf(screenshot1));
+				ScreenshotMeta screenshot2 = screenshots2.get(screenshots2.indexOf(screenshot1));
 
 				ImageCompare ic;
 				InputStream in1 = null;
