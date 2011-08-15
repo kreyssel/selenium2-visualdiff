@@ -7,6 +7,7 @@ import org.junit.rules.MethodRule;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 import org.kreyssel.selenium.visualdiff.core.ScreenshotManager;
+import org.kreyssel.selenium.visualdiff.core.ScreenshotMeta;
 import org.openqa.selenium.WebDriver;
 
 /**
@@ -45,7 +46,7 @@ public class TakesScreenshotRule implements MethodRule {
 	 * 
 	 * @throws IOException
 	 */
-	public File takeScreenshot(final WebDriver driver) throws IOException {
+	public ScreenshotMeta takeScreenshot(final WebDriver driver) throws IOException {
 		return takeScreenshot("1", driver);
 	}
 
@@ -61,7 +62,7 @@ public class TakesScreenshotRule implements MethodRule {
 	 * 
 	 * @throws IOException
 	 */
-	public File takeScreenshot(final String id, final WebDriver driver) throws IOException {
+	public ScreenshotMeta takeScreenshot(final String id, final WebDriver driver) throws IOException {
 		return screenshotManager.takeScreenshot(driver, id);
 	}
 }

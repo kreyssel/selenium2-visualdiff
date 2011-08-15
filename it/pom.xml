@@ -4,9 +4,10 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.kreyssel.selenium.visualdiff</groupId>
+		<groupId>org.kreyssel.selenium2.visualdiff</groupId>
 		<artifactId>visualdiff-parent</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<artifactId>visualdiff-it</artifactId>
@@ -40,7 +41,7 @@
 			<plugin>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>visualdiff-maven-plugin</artifactId>
-				<version>${project.parent.version}</version>
+				<version>1.0.0-SNAPSHOT</version>
 				<executions>
 					<execution>
 						<goals>
@@ -110,13 +111,13 @@
 			</plugin>
 		</plugins>
 	</build>
-
+ 
 	<reporting>
 		<plugins>
 			<plugin>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>visualdiff-maven-plugin</artifactId>
-				<version>${project.parent.version}</version>
+				<version>1.0.0-SNAPSHOT</version>
 				<reportSets>
 					<reportSet>
 						<reports>
@@ -127,5 +128,5 @@
 			</plugin>
 		</plugins>
 	</reporting>
-
+ 
 </project>

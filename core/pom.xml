@@ -4,9 +4,10 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.kreyssel.selenium.visualdiff</groupId>
+		<groupId>org.kreyssel.selenium2.visualdiff</groupId>
 		<artifactId>visualdiff-parent</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<artifactId>visualdiff-core</artifactId>
@@ -20,6 +21,7 @@
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-api</artifactId>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>

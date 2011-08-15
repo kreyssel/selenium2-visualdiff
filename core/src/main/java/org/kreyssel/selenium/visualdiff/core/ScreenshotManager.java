@@ -7,14 +7,11 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
-
-import de.schlichtherle.truezip.file.TFile;
 
 /**
  * ScreenshotManager.
@@ -25,12 +22,12 @@ public final class ScreenshotManager {
 
 	public static final String PROPERTY_OUTPUT_FILEPATH = "outputpath";
 
-	private final File archiveFile;
-
 	private final Class<?> testClass;
 
 	private final String testMethodName;
-
+	
+	private final ScreenshotStore screenshotStore; 
+	
 	private final Set<String> screenshotIds;
 
 	/**
@@ -39,13 +36,13 @@ public final class ScreenshotManager {
 	 * @throws IOException
 	 */
 	public ScreenshotManager(final Class<?> testClass, final String testMethodName) {
+		this.testClass = testClass;
+		this.testMethodName = testMethodName;
 		try {
-			this.archiveFile = getScreenshotArchivePath(testClass);
+			screenshotStore = new ScreenshotStore(getScreenshotArchivePath(testClass));
 		} catch (IOException ex) {
 			throw new RuntimeException("Error on get archive filepath!", ex);
 		}
-		this.testClass = testClass;
-		this.testMethodName = testMethodName;
 		this.screenshotIds = new HashSet<String>();
 	}
 
@@ -60,54 +57,38 @@ public final class ScreenshotManager {
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	public TFile takeScreenshot(final WebDriver driver, final String screenshotId)
+	public ScreenshotMeta takeScreenshot(final WebDriver driver, final String screenshotId)
 			throws IOException {
 
 		validateScreenshotId(screenshotId);
-
-		String screenshotSignature = testClass.getName() + "_" + testMethodName + "_"
-				+ screenshotId;
 
 		if (!(driver instanceof TakesScreenshot)) {
 			throw new RuntimeException("Class '" + driver.getClass().getName()
 					+ "' is not a instance of '" + TakesScreenshot.class.getName() + "'!");
 		}
 
+		String url = driver.getCurrentUrl();
+		String title = driver.getTitle();
+		
 		TakesScreenshot screenshotDriver = (TakesScreenshot) driver;
 
 		File tmpPngFile = screenshotDriver.getScreenshotAs(OutputType.FILE);
 
+		String screenshotSignature = testClass.getName() + "#"+testMethodName + ":"+screenshotId;
+		
 		if (tmpPngFile == null) {
 			throw new RuntimeException("Got no screenshot for test '" + screenshotSignature + "'!");
 		} else if (tmpPngFile.length() < 1) {
 			throw new RuntimeException("Screenshot for test '" + screenshotSignature
 					+ "' is 0 byte!");
 		}
-
-		String screenshotFilepath = getScreenshotArchivePath(screenshotSignature);
-
-		TFile fileInArchive = copyScreenshot(tmpPngFile, archiveFile, screenshotFilepath);
-
-		return fileInArchive;
+		
+		ScreenshotMeta meta = screenshotStore.addScreenshot(testClass.getName(), testMethodName, screenshotId, url, title, tmpPngFile);
+		
+		return meta;
 	}
 
-	/**
-	 * saveScreenshot.
-	 * 
-	 * @param src
-	 *            DOCUMENT ME!
-	 * @param target
-	 *            DOCUMENT ME!
-	 * 
-	 * @throws IOException
-	 */
-	TFile copyScreenshot(final File src, final File archive, final String filepathInArchive)
-			throws IOException {
-		System.out.println("Copy screenshot to '" + filepathInArchive + "' ("
-				+ FileUtils.byteCountToDisplaySize(src.length()) + ") ...");
 
-		return new TFile(src).cp(new TFile(archive, filepathInArchive));
-	}
 
 	/**
 	 * DOCUMENT ME!
@@ -122,8 +103,8 @@ public final class ScreenshotManager {
 	 * @throws IOException
 	 *             DOCUMENT ME!
 	 */
-	String getScreenshotArchivePath(final String screenshotSignature) throws IOException {
-		String filepath = screenshotSignature.replace('.', '/') + ".png";
+	String getScreenshotArchivePath(final String screenshotSignature, String fileEnding) throws IOException {
+		String filepath = screenshotSignature.replace('.', '/') + fileEnding;
 
 		return filepath;
 	}
