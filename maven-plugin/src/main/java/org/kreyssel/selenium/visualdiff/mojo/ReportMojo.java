@@ -5,9 +5,14 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.DefaultArtifact;
+import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.metadata.ArtifactMetadataRetrievalException;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.artifact.resolver.ArtifactResolver;
+import org.apache.maven.artifact.versioning.ArtifactVersion;
+import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.doxia.siterenderer.Renderer;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.reporting.AbstractMavenReport;
@@ -39,6 +44,22 @@ public class ReportMojo extends AbstractMavenReport {
 	private MavenProject project;
 
 	/**
+	 * Used to look up Artifacts in the remote repository.
+	 * 
+	 * @parameter expression=
+	 *            "${component.org.apache.maven.artifact.factory.ArtifactFactory}"
+	 * @required
+	 * @readonly
+	 */
+	protected ArtifactFactory artifactFactory;
+
+	/**
+	 * @component
+	 * @since 1.0-alpha-3
+	 */
+	private ArtifactResolver artifactResolver;
+
+	/**
 	 * The artifact metadata source to use.
 	 * 
 	 * @component
@@ -46,6 +67,7 @@ public class ReportMojo extends AbstractMavenReport {
 	 * @readonly
 	 */
 	private ArtifactMetadataSource artifactMetadataSource;
+
 	/**
 	 * @parameter expression="${project.remoteArtifactRepositories}"
 	 * @readonly
@@ -57,6 +79,7 @@ public class ReportMojo extends AbstractMavenReport {
 	 * @readonly
 	 */
 	protected ArtifactRepository localRepository;
+
 	/**
 	 * @component
 	 * @required
@@ -101,8 +124,6 @@ public class ReportMojo extends AbstractMavenReport {
 
 	@Override
 	protected void executeReport(final Locale arg0) throws MavenReportException {
-		System.out.println("\n\n\n\n\nreport\n\n\n\n\n" + archiveFile);
-
 		Artifact artifact = project.getArtifact();
 
 		ArtifactVersions artifactVersions;
@@ -116,5 +137,17 @@ public class ReportMojo extends AbstractMavenReport {
 					+ artifact + "' from repositories!");
 		}
 
+		ArtifactVersion newestArtifactVersion = artifactVersions.getNewestVersion(null, null);
+
+		artifactFactory.createArtifact(project.getGroupId(), project.getArtifactId(), newestArtifactVersion.toString(), scope, type)
+		
+		Artifact previousScreenshotArtifact = new DefaultArtifact(artifact.getGroupId(),
+				artifact.getArtifactId(), newestVersionRange, null, "zip", "screenshots", null);
+		try {
+			artifactResolver.resolve(previousScreenshotArtifact, remoteArtifactRepositories,
+					localRepository);
+		} catch (Exception ex) {
+			throw new MavenReportException("Error on resolve previous screenshots!", ex);
+		}
 	}
 }
