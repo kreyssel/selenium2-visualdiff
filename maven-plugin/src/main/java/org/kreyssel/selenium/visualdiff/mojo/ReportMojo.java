@@ -1,6 +1,7 @@
 package org.kreyssel.selenium.visualdiff.mojo;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
@@ -21,6 +22,7 @@ import org.codehaus.mojo.versions.api.ArtifactVersions;
 import org.codehaus.mojo.versions.ordering.VersionComparators;
 import org.kreyssel.selenium.visualdiff.core.ScreenshotStore;
 import org.kreyssel.selenium.visualdiff.core.diff.VisualDiff;
+import org.kreyssel.selenium.visualdiff.core.diff.VisualDiffMeta;
 import org.kreyssel.selenium.visualdiff.mojo.report.VisualDiffReportRenderer;
 
 /**
@@ -155,10 +157,17 @@ public class ReportMojo extends AbstractMavenReport {
 
 		ScreenshotStore currentScreenshotsStore = new ScreenshotStore(currentArchiveFile);
 		ScreenshotStore previousScreenshotsStore = new ScreenshotStore(previousArchiveFile);
-		VisualDiff vd = new VisualDiff(currentScreenshotsStore, previousScreenshotsStore);
-		vd.diff();
+		VisualDiff vd = new VisualDiff(currentScreenshotsStore, previousScreenshotsStore, new File(
+				outputDirectory));
 
-		new VisualDiffReportRenderer(getSink()).render();
+		List<VisualDiffMeta> diffs;
+		try {
+			diffs = vd.diff();
+		} catch (IOException ex) {
+			throw new MavenReportException("Error on diff screenshots!", ex);
+		}
+
+		new VisualDiffReportRenderer(getSink(), diffs).render();
 	}
 
 	protected File getScreenshotsFromLatestRelease(final Artifact artifact)
