@@ -9,7 +9,7 @@ public class VisualDiffMeta extends ScreenshotMeta {
 	public final Type diffType;
 
 	public enum Type {
-		ADDED, REMOVED, DIFFERENT;
+		EQUAL, ADDED, REMOVED, DIFFERENT;
 	}
 
 	protected VisualDiffMeta(final ScreenshotMeta screenshotMeta, final Type diffType) {

@@ -31,15 +31,26 @@ public class SimpleSeleniumIT {
 	}
 
 	@Test
-	public void test1() throws Exception {
-		driver.get("http://localhost:8080");
+	public void startPage() throws Exception {
+		driver.get("http://www.google.com");
 
 		screenshot.takeScreenshot(driver);
 	}
 
 	@Test
+	public void search() throws Exception {
+		driver.get("http://www.google.com/?q=news+2011");
+
+		screenshot.takeScreenshot("edit", driver);
+
+		driver.findElementByName("btnG").click();
+
+		screenshot.takeScreenshot("afterSubmit", driver);
+	}
+
+	@Test
 	public void test2() throws Exception {
-		driver.get("http://localhost:8080");
+		driver.get("http://www.amazon.com/");
 
 		screenshot.takeScreenshot(driver);
 	}

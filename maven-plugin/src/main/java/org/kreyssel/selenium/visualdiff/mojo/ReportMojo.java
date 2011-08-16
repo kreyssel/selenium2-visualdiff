@@ -157,12 +157,11 @@ public class ReportMojo extends AbstractMavenReport {
 
 		ScreenshotStore currentScreenshotsStore = new ScreenshotStore(currentArchiveFile);
 		ScreenshotStore previousScreenshotsStore = new ScreenshotStore(previousArchiveFile);
-		VisualDiff vd = new VisualDiff(currentScreenshotsStore, previousScreenshotsStore, new File(
-				outputDirectory));
+		VisualDiff vd = new VisualDiff(new File(outputDirectory));
 
 		List<VisualDiffMeta> diffs;
 		try {
-			diffs = vd.diff();
+			diffs = vd.diff(currentScreenshotsStore, previousScreenshotsStore);
 		} catch (IOException ex) {
 			throw new MavenReportException("Error on diff screenshots!", ex);
 		}

@@ -13,38 +13,34 @@ import org.kreyssel.selenium.visualdiff.core.diff.VisualDiffMeta.Type;
 
 public class VisualDiff {
 
-	private ScreenshotStore store1;
-	private ScreenshotStore store2;
 	private File outputDirectory;
 
-	public VisualDiff(final ScreenshotStore store1, final ScreenshotStore store2,
-			final File outputDirectory) {
-		this.store1 = store1;
-		this.store2 = store2;
+	public VisualDiff(final File outputDirectory) {
 		this.outputDirectory = outputDirectory;
 	}
 
-	public List<VisualDiffMeta> diff() throws IOException {
+	public List<VisualDiffMeta> diff(final ScreenshotStore store1, final ScreenshotStore store2)
+			throws IOException {
 		List<ScreenshotMeta> screenshots1 = store1.getScreenshots();
 		List<ScreenshotMeta> screenshots2 = store2.getScreenshots();
 
 		ArrayList<VisualDiffMeta> diffs = new ArrayList<VisualDiffMeta>();
-		diff(diffs, screenshots1, screenshots2, Type.ADDED);
-		diff(diffs, screenshots2, screenshots1, Type.REMOVED);
+		diff(diffs, store1, screenshots1, store2, screenshots2, Type.ADDED);
+		diff(diffs, store2, screenshots2, store1, screenshots1, Type.REMOVED);
 
 		return diffs;
 	}
 
-	protected void diff(final List<VisualDiffMeta> diffMeta,
-			final List<ScreenshotMeta> screenshots1, final List<ScreenshotMeta> screenshots2,
-			final Type diffType) throws IOException {
+	protected void diff(final List<VisualDiffMeta> diffMeta, final ScreenshotStore store1,
+			final List<ScreenshotMeta> screenshots1, final ScreenshotStore store2,
+			final List<ScreenshotMeta> screenshots2, final Type diffType) throws IOException {
 
 		for (ScreenshotMeta screenshot1 : screenshots1) {
 			if (diffMeta.contains(screenshot1)) {
 				continue;
 			}
 
-			boolean different = true;
+			Type innerDiffType = diffType;
 
 			ScreenshotMeta screenshot2 = null;
 			ImageCompare ic = null;
@@ -65,20 +61,21 @@ public class VisualDiff {
 				}
 
 				try {
-					different = !(ic.compare());
+					innerDiffType = ic.compare() ? Type.EQUAL : Type.DIFFERENT;
 				} catch (InterruptedException ex) {
 					throw new IOException("Error on compare screenshots!", ex);
 				}
+			} else {
+				innerDiffType = diffType;
 			}
 
-			VisualDiffMeta vdMeta = new VisualDiffMeta(screenshot1, different ? Type.DIFFERENT
-					: diffType);
+			VisualDiffMeta vdMeta = new VisualDiffMeta(screenshot1, innerDiffType);
 			diffMeta.add(vdMeta);
 
 			File sc1File = new File(outputDirectory, vdMeta.getScreenshot1Filepath());
 			store1.copy(screenshot1.path, sc1File);
 
-			if (different) {
+			if (innerDiffType == Type.DIFFERENT) {
 				File sc2File = new File(outputDirectory, vdMeta.getScreenshot2Filepath());
 				store2.copy(screenshot2.path, sc2File);
 
