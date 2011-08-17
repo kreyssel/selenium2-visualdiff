@@ -6,23 +6,29 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.kreyssel.selenium.visualdiff.core.junit4.TakesScreenshotRule;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
  * SimpleSeleniumIT.
  */
-public class SimpleSeleniumIT {
+public class GoogleIT {
 
 	@Rule
 	public TakesScreenshotRule screenshot = new TakesScreenshotRule();
 
 	RemoteWebDriver driver;
+	WebDriverWait wait;
 
 	@Before
 	public void init() {
 		driver = createDriver();
+		wait = new WebDriverWait(driver, 30);
 	}
 
 	@After
@@ -31,15 +37,33 @@ public class SimpleSeleniumIT {
 	}
 
 	@Test
-	public void test1() throws Exception {
-		driver.get("http://localhost:8080");
+	public void startPage() throws Exception {
+		driver.get("http://www.google.com");
 
 		screenshot.takeScreenshot(driver);
 	}
 
 	@Test
+	public void search() throws Exception {
+		driver.get("http://www.google.com/?q=news+2011");
+
+		screenshot.takeScreenshot("edit", driver);
+
+		driver.findElementByName("btnG").click();
+
+		wait.until(new ExpectedCondition<Boolean>() {
+			public Boolean apply(final WebDriver webDriver) {
+				System.out.println("searching ...");
+				return webDriver.findElement(By.id("resultStats")) != null;
+			}
+		});
+
+		screenshot.takeScreenshot("afterSubmit", driver);
+	}
+
+	@Test
 	public void test2() throws Exception {
-		driver.get("http://localhost:8080");
+		driver.get("http://www.amazon.com/");
 
 		screenshot.takeScreenshot(driver);
 	}
