@@ -31,8 +31,15 @@ public class SimpleSeleniumIT {
 	}
 
 	@Test
-	public void test1() throws Exception {
-		driver.get("http://localhost:8080");
+	public void testEqual() throws Exception {
+		driver.get("http://localhost:8080/equal.jsp");
+
+		screenshot.takeScreenshot(driver);
+	}
+
+	@Test
+	public void testDifferent() throws Exception {
+		driver.get("http://localhost:8080/different.jsp");
 
 		screenshot.takeScreenshot(driver);
 	}

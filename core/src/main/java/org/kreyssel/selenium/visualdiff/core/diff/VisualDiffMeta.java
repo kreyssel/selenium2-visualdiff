@@ -18,11 +18,11 @@ public class VisualDiffMeta extends ScreenshotMeta {
 	}
 
 	public String getScreenshot1Filepath() {
-		return getFile("ScrShot1");
+		return getFile("New");
 	}
 
 	public String getScreenshot2Filepath() {
-		return getFile("ScrShot2");
+		return getFile("Old");
 	}
 
 	public String getScreenshotDiffFilepath() {
@@ -30,11 +30,11 @@ public class VisualDiffMeta extends ScreenshotMeta {
 	}
 
 	private String getFile(final String suffix) {
-		File filepath = new File(path);
-		String name = filepath.getName();
+		File file = new File(this.filepath);
+		String name = file.getName();
 		int idx = name.lastIndexOf('.');
 		String newName = name.substring(0, idx) + "_" + suffix + name.substring(idx);
 
-		return new File(filepath.getParent(), newName).getPath();
+		return new File(file.getParent(), newName).getPath();
 	}
 }

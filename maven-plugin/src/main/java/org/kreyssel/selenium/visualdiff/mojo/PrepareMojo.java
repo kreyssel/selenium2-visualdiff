@@ -29,7 +29,7 @@ public class PrepareMojo extends BaseMojo {
 		try {
 			save(propertyFile, archiveFile);
 		} catch (IOException ex) {
-			throw new MojoExecutionException("Error on store screenshot path properties file!", ex);
+			throw new MojoExecutionException("Error on store screenshot filepath properties file!", ex);
 		}
 	}
 

@@ -86,7 +86,7 @@ public class ScreenshotStore {
 
 	protected String getPath(final String testClass, final String testMethod,
 			final String screenshotId, final String fileEnding) {
-		return (testClass + "_" + testMethod + "_" + screenshotId).replace('.', '/') + fileEnding;
+		return (testClass + "/" + testMethod + "_" + screenshotId).replace('.', '/') + fileEnding;
 	}
 
 	/**

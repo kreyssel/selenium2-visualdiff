@@ -14,6 +14,7 @@ import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
+import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.doxia.siterenderer.Renderer;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.reporting.AbstractMavenReport;
@@ -23,7 +24,12 @@ import org.codehaus.mojo.versions.ordering.VersionComparators;
 import org.kreyssel.selenium.visualdiff.core.ScreenshotStore;
 import org.kreyssel.selenium.visualdiff.core.diff.VisualDiff;
 import org.kreyssel.selenium.visualdiff.core.diff.VisualDiffMeta;
+import org.kreyssel.selenium.visualdiff.core.diff.VisualDiffMetaGrouper;
 import org.kreyssel.selenium.visualdiff.mojo.report.VisualDiffReportRenderer;
+import org.kreyssel.selenium.visualdiff.mojo.report.VisualDiffReportUtil;
+import org.kreyssel.selenium.visualdiff.mojo.report.VisualDiffTestReportRenderer;
+
+import com.google.common.collect.ImmutableListMultimap;
 
 /**
  * ReportMojo generates a report of visual diffs between two selenium2
@@ -37,7 +43,7 @@ public class ReportMojo extends AbstractMavenReport {
 	/**
 	 * Directory where reports will go.
 	 * 
-	 * @parameter expression="${project.reporting.outputDirectory}/visualdiff"
+	 * @parameter expression="${project.reporting.outputDirectory}"
 	 * @required
 	 * @readonly
 	 */
@@ -157,7 +163,10 @@ public class ReportMojo extends AbstractMavenReport {
 
 		ScreenshotStore currentScreenshotsStore = new ScreenshotStore(currentArchiveFile);
 		ScreenshotStore previousScreenshotsStore = new ScreenshotStore(previousArchiveFile);
-		VisualDiff vd = new VisualDiff(new File(outputDirectory));
+		VisualDiff vd = new VisualDiff(new File(outputDirectory, "images/visualdiff"));
+
+		// render overview
+		getLog().info("Render visual diff overview ...");
 
 		List<VisualDiffMeta> diffs;
 		try {
@@ -167,6 +176,24 @@ public class ReportMojo extends AbstractMavenReport {
 		}
 
 		new VisualDiffReportRenderer(getSink(), diffs).render();
+
+		// render report per testclass
+		ImmutableListMultimap<String, VisualDiffMeta> groupedPerTest = VisualDiffMetaGrouper
+				.byTestClass(diffs);
+		for (String testClass : groupedPerTest.keySet()) {
+			getLog().info("Render visual diff result for test '" + testClass + "' ...");
+
+			try {
+				Sink sinkForTestClass = getSinkFactory().createSink(new File(getOutputDirectory()),
+						VisualDiffReportUtil.asFilename(testClass, ".html"));
+
+				new VisualDiffTestReportRenderer(sinkForTestClass, testClass,
+						groupedPerTest.get(testClass)).render();
+			} catch (IOException ex) {
+				getLog().error("Could not create visual diff report for test '" + testClass + "'!",
+						ex);
+			}
+		}
 	}
 
 	protected File getScreenshotsFromLatestRelease(final Artifact artifact)

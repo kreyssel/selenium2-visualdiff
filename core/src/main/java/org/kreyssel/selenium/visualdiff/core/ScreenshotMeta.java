@@ -21,16 +21,16 @@ public class ScreenshotMeta {
 
 	public final String title;
 
-	public final String path;
+	public final String filepath;
 
 	protected ScreenshotMeta(final String testClass, final String testMethod,
-			final String screenshotId, final String url, final String title, final String path) {
+			final String screenshotId, final String url, final String title, final String filepath) {
 		this.testClass = testClass;
 		this.testMethod = testMethod;
 		this.screenshotId = screenshotId;
 		this.url = url;
 		this.title = title;
-		this.path = path;
+		this.filepath = filepath;
 	}
 
 	protected ScreenshotMeta(final ScreenshotMeta screenshotMeta) {
@@ -39,7 +39,7 @@ public class ScreenshotMeta {
 		this.screenshotId = screenshotMeta.screenshotId;
 		this.url = screenshotMeta.url;
 		this.title = screenshotMeta.title;
-		this.path = screenshotMeta.path;
+		this.filepath = screenshotMeta.filepath;
 	}
 
 	public void store(final OutputStream out) throws IOException {
@@ -49,7 +49,7 @@ public class ScreenshotMeta {
 		props.setProperty("screenshotId", screenshotId);
 		props.setProperty("url", url);
 		props.setProperty("title", title);
-		props.setProperty("path", path);
+		props.setProperty("filepath", filepath);
 		props.store(out, "");
 	}
 
@@ -59,7 +59,7 @@ public class ScreenshotMeta {
 
 		return new ScreenshotMeta(props.getProperty("testClass"), props.getProperty("testMethod"),
 				props.getProperty("screenshotId"), props.getProperty("url"),
-				props.getProperty("title"), props.getProperty("path"));
+				props.getProperty("title"), props.getProperty("filepath"));
 	}
 
 	@Override

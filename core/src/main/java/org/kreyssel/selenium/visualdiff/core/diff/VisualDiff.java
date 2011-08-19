@@ -52,8 +52,8 @@ public class VisualDiff {
 				InputStream in2 = null;
 
 				try {
-					in1 = store1.getInputStream(screenshot1.path);
-					in2 = store2.getInputStream(screenshot2.path);
+					in1 = store1.getInputStream(screenshot1.filepath);
+					in2 = store2.getInputStream(screenshot2.filepath);
 					ic = new ImageCompare(in1, in2);
 				} finally {
 					IOUtils.closeQuietly(in1);
@@ -73,11 +73,11 @@ public class VisualDiff {
 			diffMeta.add(vdMeta);
 
 			File sc1File = new File(outputDirectory, vdMeta.getScreenshot1Filepath());
-			store1.copy(screenshot1.path, sc1File);
+			store1.copy(screenshot1.filepath, sc1File);
 
 			if (innerDiffType == Type.DIFFERENT) {
 				File sc2File = new File(outputDirectory, vdMeta.getScreenshot2Filepath());
-				store2.copy(screenshot2.path, sc2File);
+				store2.copy(screenshot2.filepath, sc2File);
 
 				File diffFile = new File(outputDirectory, vdMeta.getScreenshotDiffFilepath());
 				ic.saveDiffAsPng(diffFile);
