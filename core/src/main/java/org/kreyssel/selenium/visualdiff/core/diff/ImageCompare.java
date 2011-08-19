@@ -82,7 +82,6 @@ public class ImageCompare {
 		int h2 = img2.getHeight();
 
 		if (w1 != w2 || h1 != h2) {
-			System.out.println("### diff size");
 			// Different size. Create an image that holds both images.
 			int w = w1 > w2 ? w1 : w2;
 			int h = h1 > h2 ? h1 : h2;
@@ -112,8 +111,6 @@ public class ImageCompare {
 			}
 			return false;
 		}
-
-		System.out.println("### diff same size");
 
 		// Images have same dimension
 		int[] pixels1 = new int[w1 * h1];
