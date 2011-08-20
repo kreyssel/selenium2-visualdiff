@@ -17,7 +17,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 /**
  * SimpleSeleniumIT.
  */
-public class GoogleIT {
+public class AmazonIT {
 
 	@Rule
 	public TakesScreenshotRule screenshot = new TakesScreenshotRule();
@@ -38,56 +38,31 @@ public class GoogleIT {
 
 	@Test
 	public void startPage() throws Exception {
-		driver.get("http://www.google.com");
+		driver.get("http://www.amazon.com");
 
 		screenshot.takeScreenshot(driver);
 	}
 
 	@Test
-	public void searchWeb() throws Exception {
-		driver.get("http://www.google.com/?q=news+2011");
+	public void searchBooks() throws Exception {
+		driver.get("http://www.amazon.com");
 
-		screenshot.takeScreenshot("edit", driver);
+		screenshot.takeScreenshot("startPage", driver);
 
-		driver.findElementByName("btnG").click();
+		driver.findElementById("twotabsearchtextbox").sendKeys("selenium2");
 
-		wait.until(new ExpectedCondition<Boolean>() {
-			public Boolean apply(final WebDriver webDriver) {
-				System.out.println("searching ...");
-				return webDriver.findElement(By.id("resultStats")) != null;
-			}
-		});
+		screenshot.takeScreenshot("afterInput", driver);
 
-		screenshot.takeScreenshot("afterSubmit", driver);
-	}
-
-	@Test
-	public void searchImages() throws Exception {
-		driver.get("http://www.google.com/");
-
-		screenshot.takeScreenshot("open", driver);
-
-		driver.findElementById("gb_2").click();
-
-		wait.until(new ExpectedCondition<Boolean>() {
-			public Boolean apply(final WebDriver webDriver) {
-				System.out.println("switch to images ...");
-				return webDriver.findElement(By.name("q")) != null;
-			}
-		});
-
-		screenshot.takeScreenshot("afterSwitchToImages", driver);
-
-		driver.findElementByName("q").sendKeys("selenium-2\n");
+		driver.findElementById("navGoButton").findElement(By.tagName("input")).click();
 
 		wait.until(new ExpectedCondition<Boolean>() {
 			public Boolean apply(final WebDriver webDriver) {
 				System.out.println("searching ...");
-				return webDriver.findElement(By.id("resultStats")) != null;
+				return webDriver.findElement(By.id("atfResults")) != null;
 			}
 		});
 
-		screenshot.takeScreenshot("searchResult", driver);
+		screenshot.takeScreenshot("afterSearch", driver);
 	}
 
 	private RemoteWebDriver createDriver() {
