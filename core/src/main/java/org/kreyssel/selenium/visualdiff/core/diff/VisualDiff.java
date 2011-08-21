@@ -33,14 +33,14 @@ public class VisualDiff {
 
 	protected void diff(final List<VisualDiffMeta> diffMeta, final ScreenshotStore store1,
 			final List<ScreenshotMeta> screenshots1, final ScreenshotStore store2,
-			final List<ScreenshotMeta> screenshots2, final Type diffType) throws IOException {
+			final List<ScreenshotMeta> screenshots2, final Type diffMode) throws IOException {
 
 		for (ScreenshotMeta screenshot1 : screenshots1) {
 			if (diffMeta.contains(screenshot1)) {
 				continue;
 			}
 
-			Type innerDiffType = diffType;
+			Type innerDiffType = diffMode;
 
 			ScreenshotMeta screenshot2 = null;
 			ImageCompare ic = null;
@@ -48,17 +48,7 @@ public class VisualDiff {
 			if (screenshots2.contains(screenshot1)) {
 				screenshot2 = screenshots2.get(screenshots2.indexOf(screenshot1));
 
-				InputStream in1 = null;
-				InputStream in2 = null;
-
-				try {
-					in1 = store1.getInputStream(screenshot1.filepath);
-					in2 = store2.getInputStream(screenshot2.filepath);
-					ic = new ImageCompare(in1, in2);
-				} finally {
-					IOUtils.closeQuietly(in1);
-					IOUtils.closeQuietly(in2);
-				}
+				ic = createImageCompare(store1, store2, screenshot1, screenshot2);
 
 				try {
 					innerDiffType = ic.compare() ? Type.EQUAL : Type.DIFFERENT;
@@ -66,7 +56,7 @@ public class VisualDiff {
 					throw new IOException("Error on compare screenshots!", ex);
 				}
 			} else {
-				innerDiffType = diffType;
+				innerDiffType = diffMode;
 			}
 
 			VisualDiffMeta vdMeta = new VisualDiffMeta(screenshot1, innerDiffType);
@@ -83,5 +73,25 @@ public class VisualDiff {
 				ic.saveDiffAsPng(diffFile);
 			}
 		}
+	}
+
+	private ImageCompare createImageCompare(final ScreenshotStore store1,
+			final ScreenshotStore store2, final ScreenshotMeta screenshot1,
+			final ScreenshotMeta screenshot2) throws IOException {
+
+		ImageCompare ic;
+
+		InputStream in1 = null;
+		InputStream in2 = null;
+
+		try {
+			in1 = store1.getInputStream(screenshot1.filepath);
+			in2 = store2.getInputStream(screenshot2.filepath);
+			ic = new ImageCompare(in1, in2);
+		} finally {
+			IOUtils.closeQuietly(in1);
+			IOUtils.closeQuietly(in2);
+		}
+		return ic;
 	}
 }

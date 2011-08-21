@@ -132,37 +132,37 @@ public class ReportMojo extends AbstractMavenReport {
 
 		Artifact artifact = project.getArtifact();
 
-		File currentArchiveFile;
+		Artifact currentArtifact;
 		try {
-			currentArchiveFile = resolveScreenshotArtifact(artifact, project.getArtifact()
-					.getVersion());
+			currentArtifact = resolveScreenshotArtifact(artifact, project.getVersion());
 		} catch (Exception ex) {
 			throw new MavenReportException(
 					"Error on resolve screenshot artifact for current project!", ex);
 		}
 
-		if (currentArchiveFile == null) {
+		if (currentArtifact == null) {
 			throw new MavenReportException(
 					"Could not found screenshot archive! Did you ensure that you run the package goal before?");
 		}
 
-		File previousArchiveFile;
+		Artifact previousArtifact;
 		try {
-			previousArchiveFile = getScreenshotsFromLatestRelease(artifact);
+			previousArtifact = getScreenshotsFromLatestRelease(artifact);
 		} catch (Exception ex) {
 			throw new MavenReportException(
 					"Error on resolve screenshot artifact for latest project!", ex);
 		}
 
-		if (previousArchiveFile == null) {
+		if (previousArtifact == null || previousArtifact.getFile() == null) {
 			getLog().warn(
 					"Could not found a previous release version of artifact '"
 							+ project.getArtifact() + "'!");
 			return;
 		}
 
-		ScreenshotStore currentScreenshotsStore = new ScreenshotStore(currentArchiveFile);
-		ScreenshotStore previousScreenshotsStore = new ScreenshotStore(previousArchiveFile);
+		ScreenshotStore currentScreenshotsStore = new ScreenshotStore(currentArtifact.getFile());
+		ScreenshotStore previousScreenshotsStore = new ScreenshotStore(
+				previousArtifact.getFile());
 		VisualDiff vd = new VisualDiff(new File(outputDirectory, "images/visualdiff"));
 
 		// render overview
@@ -175,7 +175,8 @@ public class ReportMojo extends AbstractMavenReport {
 			throw new MavenReportException("Error on diff screenshots!", ex);
 		}
 
-		new VisualDiffReportRenderer(getSink(), diffs).render();
+		new VisualDiffReportRenderer(getSink(), currentArtifact, previousArtifact, diffs)
+				.render();
 
 		// render report per testclass
 		ImmutableListMultimap<String, VisualDiffMeta> groupedPerTest = VisualDiffMetaGrouper
@@ -196,7 +197,7 @@ public class ReportMojo extends AbstractMavenReport {
 		}
 	}
 
-	protected File getScreenshotsFromLatestRelease(final Artifact artifact)
+	protected Artifact getScreenshotsFromLatestRelease(final Artifact artifact)
 			throws ArtifactMetadataRetrievalException, ArtifactResolutionException,
 			ArtifactNotFoundException {
 
@@ -214,7 +215,7 @@ public class ReportMojo extends AbstractMavenReport {
 		return resolveScreenshotArtifact(artifact, newestArtifactVersion.toString());
 	}
 
-	protected File resolveScreenshotArtifact(final Artifact artifact, final String version)
+	protected Artifact resolveScreenshotArtifact(final Artifact artifact, final String version)
 			throws ArtifactResolutionException, ArtifactNotFoundException {
 
 		// resolve screenshots.zip artifact
@@ -223,6 +224,6 @@ public class ReportMojo extends AbstractMavenReport {
 
 		artifactResolver.resolve(resolveArtifact, remoteArtifactRepositories, localRepository);
 
-		return resolveArtifact.getFile();
+		return resolveArtifact;
 	}
 }

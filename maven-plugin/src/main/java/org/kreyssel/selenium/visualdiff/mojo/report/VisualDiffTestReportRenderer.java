@@ -56,15 +56,20 @@ public class VisualDiffTestReportRenderer extends AbstractMavenReportRenderer {
 				sink.text("Screenshot ID " + diffMeta.screenshotId);
 				sink.sectionTitle4_();
 
-				addScreenshot("images/visualdiff/" + diffMeta.getScreenshot1Filepath(),
-						diffMeta.diffType);
+				sink.table();
+				sink.tableRow();
+
+				renderScreenshot("images/visualdiff/" + diffMeta.getScreenshot1Filepath(), "new");
 
 				if (diffMeta.diffType == Type.DIFFERENT) {
-					addScreenshot("images/visualdiff/" + diffMeta.getScreenshotDiffFilepath(),
-							diffMeta.diffType);
-					addScreenshot("images/visualdiff/" + diffMeta.getScreenshot2Filepath(),
-							diffMeta.diffType);
+					renderScreenshot("images/visualdiff/" + diffMeta.getScreenshotDiffFilepath(),
+							"differences");
+					renderScreenshot("images/visualdiff/" + diffMeta.getScreenshot2Filepath(),
+							"old");
 				}
+
+				sink.tableRow_();
+				sink.table_();
 
 				sink.section4_();
 			}
@@ -75,16 +80,27 @@ public class VisualDiffTestReportRenderer extends AbstractMavenReportRenderer {
 		}
 	}
 
-	private void addScreenshot(final String path, final Type diffType) {
+	private void renderScreenshot(final String path, final String type) {
+		SinkEventAttributeSet cellAttr = new SinkEventAttributeSet();
+		cellAttr.addAttribute(SinkEventAttributes.ALIGN, "center");
+
 		SinkEventAttributeSet smallImagesAttr = new SinkEventAttributeSet();
 		smallImagesAttr.addAttribute(SinkEventAttributes.HEIGHT, "200");
 		smallImagesAttr.addAttribute(SinkEventAttributes.HSPACE, "20");
+		smallImagesAttr.addAttribute(SinkEventAttributes.VSPACE, "10");
 		smallImagesAttr.addAttribute(SinkEventAttributes.BORDER, "1");
-		smallImagesAttr.addAttribute(SinkEventAttributes.ALT, diffType.name());
+		smallImagesAttr.addAttribute(SinkEventAttributes.ALT, type);
+
+		sink.tableCell(cellAttr);
 
 		sink.link(path);
 		sink.figureGraphics(path, smallImagesAttr);
 		sink.link_();
 
+		sink.lineBreak();
+
+		sink.text(type);
+
+		sink.tableCell_();
 	}
 }

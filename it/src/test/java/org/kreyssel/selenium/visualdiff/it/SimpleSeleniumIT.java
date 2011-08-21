@@ -45,7 +45,7 @@ public class SimpleSeleniumIT {
 	}
 
 	@Test
-	public void test2() throws Exception {
+	public void test3() throws Exception {
 		driver.get("http://localhost:8080");
 
 		screenshot.takeScreenshot(driver);

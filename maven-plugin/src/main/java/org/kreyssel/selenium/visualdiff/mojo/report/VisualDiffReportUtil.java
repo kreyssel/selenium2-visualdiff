@@ -17,17 +17,10 @@ public final class VisualDiffReportUtil {
 	static void renderTable(final Sink sink, final Depth depth, final String title,
 			final ImmutableListMultimap<String, VisualDiffMeta> grouping) {
 
-		if (depth == Depth.CLASS) {
-			sink.section1();
-			sink.sectionTitle1();
-			sink.text(title);
-			sink.sectionTitle1_();
-		} else {
-			sink.section2();
-			sink.sectionTitle2();
-			sink.text(title);
-			sink.sectionTitle2_();
-		}
+		sink.section2();
+		sink.sectionTitle2();
+		sink.text(title);
+		sink.sectionTitle2_();
 
 		sink.table();
 
