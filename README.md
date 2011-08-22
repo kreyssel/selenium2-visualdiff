@@ -7,6 +7,10 @@ The goal is a better integration of screenshots taking in maven executed *seleni
 functional tests, storing and versioning of screenshots to get a report of visual differences
 between two application versions.
 
+Report
+------
+See sample report http://kreyssel.github.com/selenium2-visualdiff/visualdiff.html.
+
 Usage
 -----
 Embed *jUnit4* and the *selenium2-visualdiff* core library as dependencies in your funtional test maven module:
