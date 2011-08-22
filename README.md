@@ -9,12 +9,12 @@ between two application versions.
 
 Usage
 -----
-Embed *jUnit4* and the *selenium-visualdiff* core library as dependencies in your funtional test maven module:
+Embed *jUnit4* and the *selenium2-visualdiff* core library as dependencies in your funtional test maven module:
 
     <dependencies>
         ...
         <dependency>
-            <groupId>org.kreyssel.selenium.visualdiff</groupId>
+            <groupId>org.kreyssel.selenium2.visualdiff</groupId>
             <artifactId>visualdiff-core</artifactId>
             <version>1.0.0-SNAPSHOT</version>
             <scope>test</scope>
@@ -22,12 +22,12 @@ Embed *jUnit4* and the *selenium-visualdiff* core library as dependencies in you
         ...
     </dependencies>
 
-Add the selenium-visualdiff-maven-plugin to the maven module:
+Add the selenium2-visualdiff-maven-plugin to the maven module:
 
     <plugins>
         ...
         <plugin>
-            <groupId>org.kreyssel.selenium.visualdiff</groupId>
+            <groupId>org.kreyssel.selenium2.visualdiff</groupId>
             <artifactId>visualdiff-maven-plugin</artifactId>
             <version>1.0.0-SNAPSHOT</version>
             <executions>
@@ -42,11 +42,11 @@ Add the selenium-visualdiff-maven-plugin to the maven module:
         ...
     </plugins>
 
-And after all, embed *org.kreyssel.selenium.visualdiff.core.junit4.TakesScreenshotRule* in your functional test:
+And after all, embed *org.kreyssel.selenium2.visualdiff.core.junit4.TakesScreenshotRule* in your functional test:
 
-    package org.kreyssel.selenium.visualdiff.it;
+    package org.kreyssel.selenium2.visualdiff.it;
     
-    import org.kreyssel.selenium.visualdiff.core.junit4.TakesScreenshotRule;
+    import org.kreyssel.selenium2.visualdiff.core.junit4.TakesScreenshotRule;
     
     /**
      * SimpleSeleniumIT.
@@ -78,5 +78,5 @@ And after all, embed *org.kreyssel.selenium.visualdiff.core.junit4.TakesScreensh
 
 After the executions of functional tests in a maven run, all screenshots taken at this time are packaged as zip and attached to the build as *${project.build.finalName}-screenshots.zip*. This archive is deployed to maven repository in the *deploy* phase of the maven build.
 
-The *selenium-visualdiff* report plugin generates a report that shows you the different screens per testcase compared to the previous release.
+The *selenium2-visualdiff* report plugin generates a report that shows you the different screens per testcase compared to the previous release.
 
