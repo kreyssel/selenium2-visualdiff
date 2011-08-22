@@ -24,6 +24,7 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<!-- TrueZIP to store screenshots in zip archive -->
 		<dependency>
 			<groupId>de.schlichtherle.truezip</groupId>
 			<artifactId>truezip-file</artifactId>
